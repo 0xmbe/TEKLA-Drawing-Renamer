@@ -165,6 +165,7 @@ namespace TS_Extension1
                 System.Double width = 0;
                 System.Double height = 0;
                 System.Double length = 0;
+                string mainpartname = "";
 
                 string text = "";
 				Tekla.Structures.Model.ModelObject modelObject = null;
@@ -234,20 +235,24 @@ namespace TS_Extension1
                     modelObject.GetReportProperty("HEIGHT", ref height);
                     modelObject.GetReportProperty("LENGTH", ref length);
                     modelObject.GetReportProperty("PROFILE", ref text);
+                    //
+                    modelObject.GetReportProperty("NAME", ref mainpartname);
 
                     //MessageBox.Show("width = " + Math.Round(width).ToString() + "\nheight = " + Math.Round(height).ToString() + "\nlength = " + Math.Round(length).ToString() + "\nprofile string = " + text.ToString());
 
-                    if ((text.Substring(0, 2) == "PL" || text.Substring(0, 2) == "FL") && char.IsNumber(text, 2))
-					{
+                    //if ((text.Substring(0, 2) == "PL" || text.Substring(0, 2) == "FL") && char.IsNumber(text, 2))
+					//{
                         //text = text.Substring(2, text.Length - 2) + " " + text.Substring(0, 2);
-                        text = Math.Round(width).ToString() + "*" + Math.Round(height).ToString() + "*" + Math.Round(length).ToString() + " " + text.Substring(0, 2);
-                    }
+                        //text = Math.Round(width).ToString() + "*" + Math.Round(height).ToString() + "*" + Math.Round(length).ToString() + " " + text.Substring(0, 2);
+                        text = mainpartname;
+                    //}
                     num3++;
 				}
 				if (modelObject != null)
 				{
-					DrawingList.Current.SetUserProperty("DR_MAINPARTPROFILE", text);
-					DrawingList.Current.Modify();
+					//DrawingList.Current.SetUserProperty("DR_MAINPARTPROFILE", text);
+                    DrawingList.Current.SetUserProperty("NAME_BASE", text);
+                    DrawingList.Current.Modify();
 				}
 			}
 
