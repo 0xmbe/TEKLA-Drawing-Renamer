@@ -9,7 +9,7 @@ namespace TS_Extension1
 {
     public class Variables
     {
-        public static string caption = "Show profile v1.2";
+        public static string caption = "Drawing Renamer v0.1";
         public static string date = "Tekla v21.0";
         public static string title = Variables.caption + " / " + Variables.date;
     }
@@ -47,14 +47,14 @@ namespace TS_Extension1
 			base.SuspendLayout();
 			this.AllDrawing.Location = new Point(10, 72);
 			this.AllDrawing.Name = "AllDrawing";
-			this.AllDrawing.Size = new System.Drawing.Size(75, 23);
+			this.AllDrawing.Size = new System.Drawing.Size(40, 23);
 			this.AllDrawing.TabIndex = 0;
 			this.AllDrawing.Text = "All";
 			this.AllDrawing.UseVisualStyleBackColor = true;
 			this.AllDrawing.Click += new EventHandler(this.AllDrawing_Click);
 			this.SelectedDrawing.Location = new Point(91, 72);
 			this.SelectedDrawing.Name = "SelectedDrawing";
-			this.SelectedDrawing.Size = new System.Drawing.Size(75, 23);
+			this.SelectedDrawing.Size = new System.Drawing.Size(80, 23);
 			this.SelectedDrawing.TabIndex = 1;
 			this.SelectedDrawing.Text = "Selected";
 			this.SelectedDrawing.UseVisualStyleBackColor = true;
@@ -82,16 +82,16 @@ namespace TS_Extension1
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(234, 17);
 			this.label1.TabIndex = 6;
-			this.label1.Text = "Show main-part profile/scale for:";
+			this.label1.Text = "Rename Drawing Names for:";
 			this.label2.AutoSize = true;
 			this.label2.Location = new Point(8, 100);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(234, 17);
 			this.label2.TabIndex = 6;
-			this.label2.Text = "------------------------------------------------------------\nModified by Domen Zagar/Skanding:\n- FL and PL profile prefix is moved \nto the end, \n - scale is displayed for GA drawings.";
+			this.label2.Text = "------------------------------------------------------------\nMod by Matija Bensa / Skanding\n Based on FL-PL Checker by Domen Zagar";
 			base.AutoScaleDimensions = new SizeF(8f, 16f);
 			base.AutoScaleMode = AutoScaleMode.Font;
-			base.ClientSize = new System.Drawing.Size(400, 100);
+			base.ClientSize = new System.Drawing.Size(420, 133);
 			base.Controls.Add(this.label1);
 			base.Controls.Add(this.label2);
 			base.Controls.Add(this.CurrentNo);
@@ -162,12 +162,13 @@ namespace TS_Extension1
 				this.CurrentNo.Text = num++.ToString() + '/' + DrawingList.GetSize().ToString();
 				this.CurrentNo.Refresh();
 
-                System.Double width = 0;
-                System.Double height = 0;
-                System.Double length = 0;
+                //System.Double width = 0;
+                //System.Double height = 0;
+                //System.Double length = 0;
                 string mainpartname = "";
-
+                string existingDrawingname = "";    // Name of the drawing before modify
                 string text = "";
+
 				Tekla.Structures.Model.ModelObject modelObject = null;
 
                 Drawing currentDrawing = DrawingList.Current;
@@ -213,16 +214,11 @@ namespace TS_Extension1
 					AssemblyDrawing assemblyDrawing = DrawingList.Current as AssemblyDrawing;
                     Identifier assemblyIdentifier = assemblyDrawing.AssemblyIdentifier;
 					modelObject = this.My_model.SelectModelObject(assemblyIdentifier);
-                    modelObject.GetReportProperty("WIDTH", ref width);
-                    modelObject.GetReportProperty("HEIGHT", ref height);
-                    modelObject.GetReportProperty("LENGTH", ref length);
-                    modelObject.GetReportProperty("MAINPART.PROFILE", ref text);
-					if ((text.Substring(0, 2) == "PL" || text.Substring(0, 2) == "FL") && char.IsNumber(text, 2))
-					{
-						//text = text.Substring(2, text.Length - 2) + " " + text.Substring(0, 2);
-                        text = Math.Round(width).ToString() + "*" + Math.Round(height).ToString() + "*" + Math.Round(length).ToString() + " " + text.Substring(0, 2);
-					}
-					num2++;
+
+                   // modelObject.GetReportProperty("NAME", ref mainpartname);
+                    modelObject.GetReportProperty("ASSEMBLY_NAME", ref mainpartname);
+
+                    num2++;
 				}
 
 
@@ -231,29 +227,30 @@ namespace TS_Extension1
                     SinglePartDrawing singlePartDrawing = DrawingList.Current as SinglePartDrawing;
 					Identifier partIdentifier = singlePartDrawing.PartIdentifier;
 					modelObject = this.My_model.SelectModelObject(partIdentifier);
-                    modelObject.GetReportProperty("WIDTH", ref width);
-                    modelObject.GetReportProperty("HEIGHT", ref height);
-                    modelObject.GetReportProperty("LENGTH", ref length);
-                    modelObject.GetReportProperty("PROFILE", ref text);
-                    //
+
                     modelObject.GetReportProperty("NAME", ref mainpartname);
-
-                    //MessageBox.Show("width = " + Math.Round(width).ToString() + "\nheight = " + Math.Round(height).ToString() + "\nlength = " + Math.Round(length).ToString() + "\nprofile string = " + text.ToString());
-
-                    //if ((text.Substring(0, 2) == "PL" || text.Substring(0, 2) == "FL") && char.IsNumber(text, 2))
-					//{
-                        //text = text.Substring(2, text.Length - 2) + " " + text.Substring(0, 2);
-                        //text = Math.Round(width).ToString() + "*" + Math.Round(height).ToString() + "*" + Math.Round(length).ToString() + " " + text.Substring(0, 2);
-                        text = mainpartname;
-                    //}
-                    num3++;
+          
 				}
 				if (modelObject != null)
 				{
-					//DrawingList.Current.SetUserProperty("DR_MAINPARTPROFILE", text);
-                    DrawingList.Current.SetUserProperty("NAME_BASE", text);
-                    DrawingList.Current.Modify();
-				}
+
+                    // Check if drawing name already contains the automatic drawing name:
+                    existingDrawingname = DrawingList.Current.Name;
+                    bool drawingNameMatch = existingDrawingname.Contains(mainpartname);
+                    //Console.WriteLine("'{0}' is in the string '{1}'", mainpartname, existingDrawingname);
+
+                    if ((drawingNameMatch == true) || (drawingNameMatch = existingDrawingname.Contains("DS")))
+                    {
+                        num4++;
+                    }                    
+                    if (drawingNameMatch == false)
+                    {
+                        DrawingList.Current.Name = mainpartname;
+                        DrawingList.Current.Modify();
+                        num3++;
+                    }
+
+                }
 			}
 
             if (needsUpdating == true)
@@ -264,13 +261,15 @@ namespace TS_Extension1
             MessageBox.Show(string.Concat(new object[]
 			{
 				num3,
-				" Single-part profile drawing done! \n",
-				num2,
-				" Assembly profile drawing done! \n",
-				num4,
-				" GA drawings scale done! \n",
-				DrawingList.GetSize() - (num3 + num2),
-				" Drawing profile are not done!"
+				" Drawing's name changed \n",
+			//	num2,
+			//	" Assembly profile drawing done! \n",
+			//	num4,
+			//	" GA drawings scale done! \n",
+			//	DrawingList.GetSize() - (num3 + num2),
+			//	" Drawing profile are not done! \n",
+                num4,
+                " Drawings kept the existing name"
             }), Variables.title);
 		}
 		private void Close_tool_Click(object sender, EventArgs e)
