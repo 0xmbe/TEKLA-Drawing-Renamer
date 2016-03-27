@@ -42,15 +42,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DK_Show_Profile_In_Drawing_list.Properties\Resources.cs" />
-    <Compile Include="DK_Show_Profile_In_Drawing_list.Properties\Settings.cs" />
-    <Compile Include="TS_Extension1\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="SKA_DrawingRenamer.Properties\Resources.cs" />
+    <Compile Include="SKA_DrawingRenamer.Properties\Settings.cs" />
+    <Compile Include="TS_Extension1\Form1.cs" />
     <Compile Include="TS_Extension1\Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DK_Show_Profile_In_Drawing_list.Properties\Resources.resources" />
+    <EmbeddedResource Include="SKA_DrawingRenamer.Properties\Resources.resources" />
     <EmbeddedResource Include="TS_Extension1\Form1.resources" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
