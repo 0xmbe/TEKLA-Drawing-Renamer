@@ -2,7 +2,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.Configuration;
 using System.Runtime.CompilerServices;
-namespace DK_Show_Profile_In_Drawing_list.Properties
+namespace SKA_DrawingRenamer.Properties
 {
 	[GeneratedCode("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "10.0.0.0"), CompilerGenerated]
 	internal sealed class Settings : ApplicationSettingsBase

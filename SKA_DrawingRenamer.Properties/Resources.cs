@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Resources;
 using System.Runtime.CompilerServices;
-namespace DK_Show_Profile_In_Drawing_list.Properties
+namespace SKA_DrawingRenamer.Properties
 {
 	[GeneratedCode("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0"), DebuggerNonUserCode, CompilerGenerated]
 	internal class Resources
@@ -19,7 +19,7 @@ namespace DK_Show_Profile_In_Drawing_list.Properties
 			{
 				if (object.ReferenceEquals(Resources.resourceMan, null))
 				{
-					ResourceManager resourceManager = new ResourceManager("DK_Show_Profile_In_Drawing_list.Properties.Resources", typeof(Resources).Assembly);
+					ResourceManager resourceManager = new ResourceManager("SKA_DrawingRenamer.Properties.Resources", typeof(Resources).Assembly);
 					Resources.resourceMan = resourceManager;
 				}
 				return Resources.resourceMan;

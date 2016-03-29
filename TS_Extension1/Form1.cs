@@ -128,7 +128,7 @@ namespace TS_Extension1
 			if (drawingHandler.GetConnectionStatus())
 			{
 				DrawingEnumerator selected = drawingHandler.GetDrawingSelector().GetSelected();
-				this.AddProfileToDrawingListAtt(selected);
+				this.RenameDrawingTitle(selected);
 			}
 		}
 		private void AllDrawing_Click(object sender, EventArgs e)
@@ -140,20 +140,20 @@ namespace TS_Extension1
 				DrawingEnumerator drawings = drawingHandler.GetDrawings();
 				try
 				{
-					this.AddProfileToDrawingListAtt(drawings);
+					this.RenameDrawingTitle(drawings);
 				}
 				catch (Exception exc)
 				{
-					MessageBox.Show("Show main profile program failed." + "\n" + exc, Variables.title);
+					MessageBox.Show("Drawing Renamer program failed." + "\n" + exc, Variables.title);
 				}
 			}
 		}
-		private void AddProfileToDrawingListAtt(DrawingEnumerator DrawingList)
+		private void RenameDrawingTitle(DrawingEnumerator DrawingList)
 		{
 			this.progressBar1.Maximum = DrawingList.GetSize();
-			int num = 1;
-			int num2 = 0;
-			int num3 = 0;
+            int num = 0;
+            int num2 = 0;
+            int num3 = 0;
 			int num4 = 0;
             bool needsUpdating = false;
 			while (DrawingList.MoveNext())
@@ -162,12 +162,9 @@ namespace TS_Extension1
 				this.CurrentNo.Text = num++.ToString() + '/' + DrawingList.GetSize().ToString();
 				this.CurrentNo.Refresh();
 
-                //System.Double width = 0;
-                //System.Double height = 0;
-                //System.Double length = 0;
                 string mainpartname = "";
                 string existingDrawingname = "";    // Name of the drawing before modify
-                string text = "";
+                //string text = "";
 
 				Tekla.Structures.Model.ModelObject modelObject = null;
 
@@ -178,49 +175,16 @@ namespace TS_Extension1
                     continue;
                 }
 
-				if (DrawingList.Current is GADrawing)
-				{
-					GADrawing gADrawing = DrawingList.Current as GADrawing;
-					DrawingObjectEnumerator views = gADrawing.GetSheet().GetViews();
-					string text1 = "Scale = 1: ";
-                    string text2 = "";
-                    double scaleZero = 0;
-					while (views != null && views.MoveNext())
-					{
-						Tekla.Structures.Drawing.View view = views.Current as Tekla.Structures.Drawing.View;
-						string text3 = view.Attributes.Scale.ToString() + ", ";
-                        if (scaleZero > view.Attributes.Scale)
-                        {
-                            text2 += text3;
-                        }
-                        else
-                        {
-                            text2 = text3 + text2;
-                            scaleZero = view.Attributes.Scale;
-                        }
-                        if (text1.Length + text2.Length + text3.Length >= 55)
-                        {
-                            text2 = text2.Substring(0, 55 - text3.Length - text1.Length) + "..."; //
-                        }
-					}
-					text = text1 + text2;
-					DrawingList.Current.SetUserProperty("DR_MAINPARTPROFILE", text);
-					DrawingList.Current.Modify();
-					num4++;
-				}
-
 				if (DrawingList.Current is AssemblyDrawing)
 				{
 					AssemblyDrawing assemblyDrawing = DrawingList.Current as AssemblyDrawing;
                     Identifier assemblyIdentifier = assemblyDrawing.AssemblyIdentifier;
 					modelObject = this.My_model.SelectModelObject(assemblyIdentifier);
 
-                   // modelObject.GetReportProperty("NAME", ref mainpartname);
                     modelObject.GetReportProperty("ASSEMBLY_NAME", ref mainpartname);
 
                     num2++;
 				}
-
 
                 if (DrawingList.Current is SinglePartDrawing)
 				{
@@ -237,7 +201,6 @@ namespace TS_Extension1
                     // Check if drawing name already contains the automatic drawing name:
                     existingDrawingname = DrawingList.Current.Name;
                     bool drawingNameMatch = existingDrawingname.Contains(mainpartname);
-                    //Console.WriteLine("'{0}' is in the string '{1}'", mainpartname, existingDrawingname);
 
                     if ((drawingNameMatch == true) || (drawingNameMatch = existingDrawingname.Contains("DS")))
                     {
@@ -255,19 +218,13 @@ namespace TS_Extension1
 
             if (needsUpdating == true)
             {
-                MessageBox.Show("Some of the drawings are deleted or not up to date!\n\nProfiles were not updated fot that drawings.", Variables.title);
+                MessageBox.Show("Some of the drawings are not up to date!\n\nNames were not updated for that drawings.", Variables.title);
             }
 
             MessageBox.Show(string.Concat(new object[]
 			{
 				num3,
-				" Drawing's name changed \n",
-			//	num2,
-			//	" Assembly profile drawing done! \n",
-			//	num4,
-			//	" GA drawings scale done! \n",
-			//	DrawingList.GetSize() - (num3 + num2),
-			//	" Drawing profile are not done! \n",
+				" Drawing's name changed \n",		
                 num4,
                 " Drawings kept the existing name"
             }), Variables.title);
