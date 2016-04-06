@@ -9,7 +9,7 @@ namespace TS_Extension1
 {
     public class Variables
     {
-        public static string caption = "Drawing Renamer v0.1";
+        public static string caption = "Drawing Renamer v0.2";
         public static string date = "Tekla v21.0";
         public static string title = Variables.caption + " / " + Variables.date;
     }
@@ -17,7 +17,6 @@ namespace TS_Extension1
     public class Form1 : Form
 	{
 		private IContainer components;
-		private Button AllDrawing;
 		private Button SelectedDrawing;
 		private Button Close_tool;
 		private ProgressBar progressBar1;
@@ -37,7 +36,6 @@ namespace TS_Extension1
 		private void InitializeComponent()
 		{
 			ComponentResourceManager componentResourceManager = new ComponentResourceManager(typeof(Form1));
-			this.AllDrawing = new Button();
 			this.SelectedDrawing = new Button();
 			this.Close_tool = new Button();
 			this.progressBar1 = new ProgressBar();
@@ -45,13 +43,6 @@ namespace TS_Extension1
 			this.label1 = new Label();
 			this.label2 = new Label();
 			base.SuspendLayout();
-			this.AllDrawing.Location = new Point(10, 72);
-			this.AllDrawing.Name = "AllDrawing";
-			this.AllDrawing.Size = new System.Drawing.Size(40, 23);
-			this.AllDrawing.TabIndex = 0;
-			this.AllDrawing.Text = "All";
-			this.AllDrawing.UseVisualStyleBackColor = true;
-			this.AllDrawing.Click += new EventHandler(this.AllDrawing_Click);
 			this.SelectedDrawing.Location = new Point(91, 72);
 			this.SelectedDrawing.Name = "SelectedDrawing";
 			this.SelectedDrawing.Size = new System.Drawing.Size(80, 23);
@@ -98,7 +89,6 @@ namespace TS_Extension1
 			base.Controls.Add(this.progressBar1);
 			base.Controls.Add(this.Close_tool);
 			base.Controls.Add(this.SelectedDrawing);
-			base.Controls.Add(this.AllDrawing);
 			base.Icon = (Icon)componentResourceManager.GetObject("$this.Icon");
 			base.Name = "Form1";
             this.Text = Variables.title;
@@ -131,27 +121,10 @@ namespace TS_Extension1
 				this.RenameDrawingTitle(selected);
 			}
 		}
-		private void AllDrawing_Click(object sender, EventArgs e)
-		{
-			this.progressBar1.Value = 0;
-			DrawingHandler drawingHandler = new DrawingHandler();
-			if (drawingHandler.GetConnectionStatus())
-			{
-				DrawingEnumerator drawings = drawingHandler.GetDrawings();
-				try
-				{
-					this.RenameDrawingTitle(drawings);
-				}
-				catch (Exception exc)
-				{
-					MessageBox.Show("Drawing Renamer program failed." + "\n" + exc, Variables.title);
-				}
-			}
-		}
 		private void RenameDrawingTitle(DrawingEnumerator DrawingList)
 		{
 			this.progressBar1.Maximum = DrawingList.GetSize();
-            int num = 0;
+            int num = 1;
             int num2 = 0;
             int num3 = 0;
 			int num4 = 0;
@@ -164,7 +137,6 @@ namespace TS_Extension1
 
                 string mainpartname = "";
                 string existingDrawingname = "";    // Name of the drawing before modify
-                //string text = "";
 
 				Tekla.Structures.Model.ModelObject modelObject = null;
 
