@@ -9,7 +9,7 @@ namespace TS_Extension1
 {
     public class Variables
     {
-        public static string caption = "Drawing Renamer v0.2";
+        public static string caption = "Drawing Renamer v0.2";//2016
         public static string date = "Tekla v21.0";
         public static string title = Variables.caption + " / " + Variables.date;
     }
